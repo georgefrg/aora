@@ -2,6 +2,7 @@ import { View, Text, Image } from "react-native";
 import React, { useState } from "react";
 import { icons } from "../constants";
 import { TouchableOpacity } from "react-native";
+import { ResizeMode, Video } from "expo-av";
 
 const VideoCard = ({
   video: {
@@ -12,11 +13,12 @@ const VideoCard = ({
   },
 }) => {
   const [play, setPlay] = useState(false);
+  console.log(video);
 
   return (
     <View className="flex-col items-center px-4 mb-14">
-      <View className="flex-row gap-3 items-start">
-        <View className="justify-center items-center flex-row flex-1">
+      <View className="flex-row items-start gap-3">
+        <View className="flex-row items-center justify-center flex-1">
           <View className="w-[46px] h-[46px] rounded-lg border border-secondary justify-center items-center p-0.5">
             <Image
               source={{ uri: avatar }}
@@ -27,7 +29,7 @@ const VideoCard = ({
 
           <View className="justify-center flex-1 ml-3 gap-y-1">
             <Text
-              className="text-white font-psemibold text-sm"
+              className="text-sm text-white font-psemibold"
               numberOfLines={1}
             >
               {title}
@@ -47,21 +49,35 @@ const VideoCard = ({
       </View>
 
       {play ? (
-        <Text className="text-white">Playing</Text>
+        <Video
+          source={{ uri: video }}
+          className="w-full mt-3 h-60 rounded-xl "
+          resizeMode={ResizeMode.CONTAIN}
+          useNativeControls
+          shouldPlay
+          onPlaybackStatusUpdate={(status) => {
+            if (status.didJustFinish) {
+              setPlay(false);
+            }
+          }}
+          onError={(error) => {
+            console.log("Video Error: ", error);
+          }}
+        />
       ) : (
         <TouchableOpacity
-          className="w-full h-60 rounded-xl mt-3 relative justify-center items-center"
+          className="relative items-center justify-center w-full mt-3 h-60 rounded-xl"
           activeOpacity={0.7}
           onPress={() => setPlay(true)}
         >
           <Image
             source={{ uri: thumbnail }}
-            className="w-full h-full rounded-xl mt-3"
+            className="w-full h-full mt-3 rounded-xl"
             resizeMode="cover"
           />
           <Image
             source={icons.play}
-            className="w-12 h-12 absolute"
+            className="absolute w-12 h-12"
             resizeMode="contain"
           />
         </TouchableOpacity>

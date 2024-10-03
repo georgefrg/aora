@@ -20,6 +20,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["INTERNET"],
+
       "package": "com.gogos.aora"
     },
     "web": {
