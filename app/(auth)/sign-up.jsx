@@ -23,13 +23,10 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await createUser({
-        email: form.email,
-        password: form.password,
-        username: form.username,
-      });
+      const result = await createUser(form.email, form.password, form.username);
 
-      //set it to global state...
+      setUser(result);
+      setIsLoggedIn(true);
 
       router.replace("/home");
     } catch (error) {
@@ -39,7 +36,7 @@ const SignUp = () => {
     }
   };
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="h-full bg-primary">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh] px-4 my-6">
           <Image
@@ -47,7 +44,7 @@ const SignUp = () => {
             resizeMode="contain"
             className="w-[115px] h-[35px]"
           />
-          <Text className="text-2xl text-white text-semibold mt-10 font-psemibold">
+          <Text className="mt-10 text-2xl text-white text-semibold font-psemibold">
             Sign up to Aora
           </Text>
           <FormField
@@ -75,8 +72,8 @@ const SignUp = () => {
             containerStyles="mt-7"
             isLoading={isSubmitting}
           />
-          <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-md text-gray-100 font-pregular">
+          <View className="flex-row justify-center gap-2 pt-5">
+            <Text className="text-gray-100 text-md font-pregular">
               Have an account already?
             </Text>
             <Link

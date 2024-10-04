@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  RefreshControl,
-  Alert,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, Image, RefreshControl } from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import SearchInput from "../../components/SearchInput";
@@ -15,8 +8,10 @@ import EmptyState from "../../components/EmptyState";
 import { getAllPosts, getLatestPosts } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
   const { data: posts, refetch } = useAppwrite(getAllPosts);
   const { data: latestPosts } = useAppwrite(getLatestPosts);
 
@@ -29,26 +24,26 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="h-full bg-primary">
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <VideoCard video={item} />}
         ListHeaderComponent={() => (
-          <View className="my-6 px-4 space-y-6">
-            <View className="justify-between items-start flex-row mb-6">
+          <View className="px-4 my-6 space-y-6">
+            <View className="flex-row items-start justify-between mb-6">
               <View>
-                <Text className="font-pmedium text-sm text-gray-100">
-                  Welcome Back
+                <Text className="text-sm text-gray-100 font-pmedium">
+                  Welcome Back,
                 </Text>
-                <Text className="text-2xl font-psemibold text-white">
-                  Gogos
+                <Text className="text-2xl text-white font-psemibold">
+                  {user?.username}
                 </Text>
               </View>
               <View className="mt-1.5">
                 <Image
                   source={images.logoSmall}
-                  className="w-9 h-10"
+                  className="h-10 w-9"
                   resizeMode="contain"
                 />
               </View>
@@ -56,8 +51,8 @@ const Home = () => {
 
             <SearchInput />
 
-            <View className="w-full flex-1 pt-5 pb-8">
-              <Text className="text-green-100 text-lg font-pregular mb-3">
+            <View className="flex-1 w-full pt-5 pb-8">
+              <Text className="mb-3 text-lg text-green-100 font-pregular">
                 Latest Videos
               </Text>
 

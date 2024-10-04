@@ -5,9 +5,11 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { Link, router } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
+  const { setUser, setIsLoggedIn } = useGlobalContext();
   const [form, setform] = useState({
     email: "",
     password: "",
@@ -24,7 +26,10 @@ const SignIn = () => {
     try {
       await signIn(form.email, form.password);
 
-      //set it to global state...
+      const result = await getCurrentUser();
+
+      setUser(result);
+      setIsLoggedIn(true);
 
       router.replace("/home");
     } catch (error) {
@@ -34,7 +39,7 @@ const SignIn = () => {
     }
   };
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="h-full bg-primary">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh] px-4 my-6">
           <Image
@@ -42,7 +47,7 @@ const SignIn = () => {
             resizeMode="contain"
             className="w-[115px] h-[35px]"
           />
-          <Text className="text-2xl text-white text-semibold mt-10 font-psemibold">
+          <Text className="mt-10 text-2xl text-white text-semibold font-psemibold">
             Log in to Aora
           </Text>
           <FormField
@@ -66,8 +71,8 @@ const SignIn = () => {
             isLoading={isSubmitting}
           />
 
-          <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-md text-gray-100 font-pregular">
+          <View className="flex-row justify-center gap-2 pt-5">
+            <Text className="text-gray-100 text-md font-pregular">
               Don't have an account?
             </Text>
             <Link
