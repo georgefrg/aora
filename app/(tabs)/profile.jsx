@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchInput from "../../components/SearchInput";
@@ -7,21 +7,21 @@ import { getUserPosts, searchPosts, signOut } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { icons } from "../../constants";
 import InfoBox from "../../components/InfoBox";
 import { router } from "expo-router";
 
 const Profile = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
-  const { data: posts, refetch } = useAppwrite(() => getUserPosts());
+  const { data: posts } = useAppwrite(() => getUserPosts(user?.$id));
+  console.log(posts);
+  console.log(user.$id);
 
   const logout = async () => {
     await signOut();
+    router.replace("/sign-in");
     setUser(null);
     setIsLoggedIn(false);
-
-    router.replace("/sign-in");
   };
 
   return (
